@@ -13,6 +13,7 @@ public class TestSynchronized {
 	 }
 	 
 	 public void method2() {
+		 // 这是一个类锁，全局锁
 		 synchronized(TestSynchronized.class) {
 			 try {
 				 System.out.println(Thread.currentThread().getName() + "do method2");
@@ -37,6 +38,7 @@ public class TestSynchronized {
 	 
 	 public static void main(String[] args) {
 		 TestSynchronized objLock = new TestSynchronized();
+		 TestSynchronized objLock1 = new TestSynchronized();
 		 Thread t1 = new Thread(new Runnable() {
 				@Override
 				public void run() {
@@ -46,7 +48,7 @@ public class TestSynchronized {
 		 Thread t2 = new Thread(new Runnable() {
 				@Override
 				public void run() {
-					objLock.method2();
+					objLock1.method2();
 				}
 			});
 		 t1.start();
