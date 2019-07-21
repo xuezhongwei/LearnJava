@@ -38,6 +38,8 @@ public class JDBCDemo {
 		// (1) ResultSet executeQuery(String sql) // 执行查询sql，返回查询结果
 		// (2) int executeUpdate(String sql) // 返回受影响的行数。当执行DML时，返回0。
 		String sql = "select variable var, value, set_time setTime, set_by setBy from sys_config "; // sql中最后的;可以不要
+		
+		// 这里的查询结果是一定不会为null的
 		ResultSet rs = stmt.executeQuery(sql);
 		
 		// step6:处理查询结果集
