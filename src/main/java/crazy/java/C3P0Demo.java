@@ -13,9 +13,12 @@ public class C3P0Demo {
 
 	public static void main(String[] args) throws PropertyVetoException {
 		ComboPooledDataSource ds = new ComboPooledDataSource();
-		// 以下配置为C3P0数据源的基本配置项
-		// 具体参数值是根据项目实际来设置的
-		// 而且这些配置内容，是配置在配置文件中，通过读取配置文件的方式设置的，实际中是不会在代码中写死配置内容的
+		/*
+		 *  以下配置为C3P0数据源的基本配置项
+		 *  具体参数值是根据项目实际来设置的
+		 *  而且这些配置内容，是配置在配置文件中，通过读取配置文件的方式设置的，实际中是不会在代码中写死配置内容的
+		 */
+		
 		
 		// 设置连接池连接数据库所用的驱动
 		ds.setDriverClass("com.mysql.jdbc.Driver");

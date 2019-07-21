@@ -12,9 +12,11 @@ public class DBCPDemo {
 
 	public static void main(String[] args) {
 		BasicDataSource ds = new BasicDataSource();
-		// 以下配置为DBCP数据源的基本配置项
-		// 具体参数值是根据项目实际来设置的
-		// 而且这些配置内容，是配置在配置文件中，通过读取配置文件的方式设置的，实际中是不会在代码中写死配置内容的
+		/*
+		 * 以下配置为DBCP数据源的基本配置项
+		 * 具体参数值是根据项目实际来设置的
+		 * 而且这些配置内容，是配置在配置文件中，通过读取配置文件的方式设置的，实际中是不会在代码中写死配置内容的
+		 */
 		
 		// 设置连接池所需的驱动
 		ds.setDriverClassName("com.mysql.jdbc.Driver");
