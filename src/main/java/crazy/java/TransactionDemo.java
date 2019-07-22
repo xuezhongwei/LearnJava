@@ -11,13 +11,16 @@ public class TransactionDemo {
 
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
 		Connection conn = getConnection();
+		Statement stmt = null;
 		try {
 			// 关闭事务自动自动提交，即开启事务
 			conn.setAutoCommit(false);
 			
-			// 执行各种操作
-			// 创建Statement，执行sql，处理sql执行结果
-			Statement stmt = conn.createStatement();
+			/*
+			 * 执行各种操作
+			 * 创建Statement，执行sql，处理sql执行结果
+			 */
+			stmt = conn.createStatement();
 			String sql = "update xxxx";
 			stmt.execute(sql);
 			
@@ -27,27 +30,43 @@ public class TransactionDemo {
 			// 当遇到异常，必须回滚事务
 			conn.rollback();
 		} finally {
-			if (conn != null) {
+			// 最后必须关闭资源
+			
+			if (null != stmt) {
+				try {
+					stmt.close();
+				} catch(SQLException e) {
+					e.printStackTrace();
+				} finally {
+					stmt = null;
+				}
+			}
+			
+			if (null != conn) {
 				try {
 					conn.close();
 				} catch (SQLException e) {
 					e.printStackTrace();
+				} finally {
+					conn = null;
 				}
 			}
 		}
-		
-		
 	}
 	/**
 	 * 获得数据库连接
 	 */
 	private static Connection getConnection() throws ClassNotFoundException, SQLException {
-		// step1:加载特定数据库的JDBC驱动
-		// 有三种加载JDBC驱动的方法，以下是最常用的方法
+		/*
+		 * step1:加载特定数据库的JDBC驱动
+		 * 有三种加载JDBC驱动的方法，以下是最常用的方法
+		 */
 		Class.forName("com.mysql.jdbc.Driver");
 		
-		// step2:配置数据源
-		// 数据源通常配置在配置文件中
+		/*
+		 * step2:配置数据源
+		 * 数据源通常配置在配置文件中
+		 */
 		String url = "jdbc:mysql://127.0.0.1:3306/sys";
 		String user = "root";
 		String password = "xzw295077145";

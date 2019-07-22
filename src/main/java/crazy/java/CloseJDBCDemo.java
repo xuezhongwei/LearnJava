@@ -75,12 +75,16 @@ public class CloseJDBCDemo {
 	 * 获得数据库连接
 	 */
 	private static Connection getConnection() throws ClassNotFoundException, SQLException {
-		// step1:加载特定数据库的JDBC驱动
-		// 有三种加载JDBC驱动的方法，以下是最常用的方法
+		/*
+		 * step1:加载特定数据库的JDBC驱动
+		 * 有三种加载JDBC驱动的方法，以下是最常用的方法
+		 */
 		Class.forName("com.mysql.jdbc.Driver");
 		
-		// step2:配置数据源
-		// 数据源通常配置在配置文件中
+		/*
+		 * step2:配置数据源
+		 * 数据源通常配置在配置文件中
+		 */
 		String url = "jdbc:mysql://127.0.0.1:3306/sys";
 		String user = "root";
 		String password = "xzw295077145";

@@ -24,9 +24,11 @@ public class StatementDemo {
 		 */
 		Connection conn = getConnection();
 		
-		// PreparedStatement用法
-		// SQL中需要的参数使用占位符代替，通常用？
-		// 不存在SQL注入风险
+		/*
+		 * PreparedStatement用法
+		 * SQL中需要的参数使用占位符代替，通常用？
+		 * 不存在SQL注入风险
+		 */
 		String loginSql1 = "select * from user where user_name = ? and password = ? ";
 		PreparedStatement pstmt = conn.prepareStatement(loginSql1);
 		// 为SQL中的参数设值，参数编号从左到右，从1开始
@@ -49,12 +51,16 @@ public class StatementDemo {
 	 * 获得数据库连接
 	 */
 	private static Connection getConnection() throws ClassNotFoundException, SQLException {
-		// step1:加载特定数据库的JDBC驱动
-		// 有三种加载JDBC驱动的方法，以下是最常用的方法
+		/*
+		 * step1:加载特定数据库的JDBC驱动
+		 * 有三种加载JDBC驱动的方法，以下是最常用的方法
+		 */
 		Class.forName("com.mysql.jdbc.Driver");
 		
-		// step2:配置数据源
-		// 数据源通常配置在配置文件中
+		/*
+		 * step2:配置数据源
+		 * 数据源通常配置在配置文件中
+		 */
 		String url = "jdbc:mysql://127.0.0.1:3306/sys";
 		String user = "root";
 		String password = "xzw295077145";
