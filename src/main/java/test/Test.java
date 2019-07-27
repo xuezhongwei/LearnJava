@@ -1,5 +1,6 @@
 package test;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -42,5 +43,12 @@ public class Test {
 		
 		stmt.close();
 		conn.close();
+	}
+	public void test() {
+		String str = "hello";
+		BigDecimal bd = BigDecimal.ZERO;
+		if (str == bd) {
+			
+		}
 	}
 }
