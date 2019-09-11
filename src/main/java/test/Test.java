@@ -14,6 +14,14 @@ import java.sql.Statement;
 public class Test {
 
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
+		test();
+	}
+	public static void test() {
+		int str = 1;
+		String strByFormat = String.format("%05d", str);
+		System.out.print(strByFormat);
+	}
+	public static void test1() throws Exception {
 		// step1:加载特定数据库的JDBC驱动
 		// 有三种加载JDBC驱动的方法，以下是最常用的方法
 		Class.forName("com.mysql.jdbc.Driver");
@@ -43,12 +51,5 @@ public class Test {
 		
 		stmt.close();
 		conn.close();
-	}
-	public void test() {
-		String str = "hello";
-		BigDecimal bd = BigDecimal.ZERO;
-		if (str == bd) {
-			
-		}
 	}
 }
