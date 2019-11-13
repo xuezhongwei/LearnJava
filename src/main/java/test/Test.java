@@ -14,7 +14,7 @@ import java.sql.Statement;
 public class Test {
 
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
-		test();
+		test2();
 	}
 	public static void test() {
 		int str = 1;
@@ -51,5 +51,11 @@ public class Test {
 		
 		stmt.close();
 		conn.close();
+	}
+	static void test2() {
+		switch(TestEnum.Test) {
+		case Test :
+			
+		}
 	}
 }

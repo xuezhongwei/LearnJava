@@ -37,21 +37,15 @@ public class TestSynchronized {
 	 }
 	 
 	 public static void main(String[] args) {
-		 TestSynchronized objLock = new TestSynchronized();
-		 TestSynchronized objLock1 = new TestSynchronized();
-		 Thread t1 = new Thread(new Runnable() {
-				@Override
-				public void run() {
-					objLock.method2();
-				}
-			});
-		 Thread t2 = new Thread(new Runnable() {
-				@Override
-				public void run() {
-					objLock1.method2();
-				}
-			});
-		 t1.start();
-		 t2.start();
+		/*
+		 * TestSynchronized objLock = new TestSynchronized(); TestSynchronized objLock1
+		 * = new TestSynchronized(); Thread t1 = new Thread(new Runnable() {
+		 * 
+		 * @Override public void run() { objLock.method2(); } }); Thread t2 = new
+		 * Thread(new Runnable() {
+		 * 
+		 * @Override public void run() { objLock1.method2(); } }); t1.start();
+		 * t2.start();
+		 */
 	 }
 }
