@@ -12,14 +12,15 @@ public class SQLUtils {
 	public static void main(String[] args) throws SQLException {
 		Connection conn = getConnection();
 		Statement state = conn.createStatement();
-		String sql = "select * from eb_ent_price_template_temp";
+		String sql = "select * from test";
 		ResultSet rs = state.executeQuery(sql);
-		ResultSetMetaData rsmd = rs.getMetaData();
 		
 		DatabaseMetaData dbmd = conn.getMetaData();
-		//printColumnInfo(dbmd);
+		//printTableToModel(dbmd);
 		//printMapperResultMap(dbmd);
-		printMapperInsertSql(dbmd);
+		//printMapperInsertSql(dbmd);
+		//printAllTableInfo(dbmd);
+		printResultSetColumnName(rs);
 		state.close();
 		conn.close();
 	}
@@ -28,9 +29,9 @@ public class SQLUtils {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			
-			String url = "jdbc:mysql://192.168.2.250:3306/dev_izejin";
-			String user = "izejin";
-			String password = "qeadzc132";
+			String url = "jdbc:mysql://127.0.0.1:3306/lanyuan";
+			String user = "root";
+			String password = "root";
 			
 			Connection conn = DriverManager.getConnection(url, user, password);
 			if (null != conn) {
@@ -42,22 +43,34 @@ public class SQLUtils {
 			throw new RuntimeException("", e);
 		}
 	}
-	
-	public static void printColumnInfo(DatabaseMetaData databaseMetaData) {
+	/**
+	 * 生成与数据库表对应的model
+	 * 
+	 * 获得某个表的所有字段信息
+	 * 例如：字段名，字段类型，注释
+	 * @param databaseMetaData
+	 */
+	public static void printTableToModel(DatabaseMetaData databaseMetaData) {
 		ResultSet rs;
 		try {
-			rs = databaseMetaData.getColumns(null, "%", "eb_ent_price_template_temp", "%");
+			// getColums最一般的用法
+			// getColums(null, null, tableName, "%") 获得某个表的所有字段信息
+			rs = databaseMetaData.getColumns(null, null, "eb_ent_price_template_temp", "%");
 			while(rs.next()){
-	            //列名
+				// 更多信息请查阅文档
+	            // 列名
 	            String columnName = rs.getString("COLUMN_NAME");
-	            //类型
+	            // 类型名称
 	            String typeName = rs.getString("TYPE_NAME");
-	            //注释
+	            // 注释
 	            String remarks = rs.getString("REMARKS");
 	            
-	            String comments = "/**\n" + " * " + remarks + "\n */\n"; 
+	            System.out.println(columnName + " " + typeName + " " + remarks);
 	            
+	            // 拼接model字符串
+	            String comments = "/**\n" + " * " + remarks + "\n */\n"; 
 	            String var = "private ";
+	            // 这里只列了几个常用类型，可根据实际情况调整
 	            if (typeName.equalsIgnoreCase("bigint")) {
 	            	var += "Long ";
 	            } else if (typeName.equalsIgnoreCase("DECIMAL")) {
@@ -80,7 +93,10 @@ public class SQLUtils {
 			e.printStackTrace();
 		}
 	}
-	
+	/**
+	 * 生成与数据库表对应的mybatis mapper <resultMap/>字符串
+	 * @param dbmd
+	 */
 	public static void printMapperResultMap(DatabaseMetaData dbmd) {
 		ResultSet rs;
 		try {
@@ -88,12 +104,6 @@ public class SQLUtils {
 			while(rs.next()){
 	            //列名
 	            String columnName = rs.getString("COLUMN_NAME");
-	            //类型
-	            String typeName = rs.getString("TYPE_NAME");
-	            //注释
-	            String remarks = rs.getString("REMARKS");
-	            
-	            String comments = "/**\n" + " * " + remarks + "\n */\n"; 
 	            
 	            String var = "";
 	            String[] words = columnName.split("_");
@@ -112,7 +122,10 @@ public class SQLUtils {
 			e.printStackTrace();
 		}
 	}
-	
+	/**
+	 * 生成与数据库表对应的mybatis mapper中 insert字符串
+	 * @param dbmd
+	 */
 	public static void printMapperInsertSql(DatabaseMetaData dbmd) {
 		ResultSet rs;
 		StringBuilder columns = new StringBuilder();
@@ -143,5 +156,45 @@ public class SQLUtils {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+	/**
+	 * 获得数据库的所有表信息
+	 * @param dbmd
+	 */
+	public static void printAllTableInfo(DatabaseMetaData dbmd) {
+		try {
+			// getTables最一般的用法
+			// getTables(null, null, "%", mull) 获得所有表的信息
+			ResultSet rs = dbmd.getTables(null, null, "%", null);
+			while(rs.next()) {
+				// 表名
+				String tableName = rs.getString("table_name");
+				// 表注释
+				String remarks = rs.getString("remarks");
+				
+				System.out.println(tableName + "  " + remarks);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	/**
+	 * 获得ResultSet包含的所有列名
+	 * 可用于获得相应的getter/setter方法
+	 */
+	public static void printResultSetColumnName(ResultSet rs) {
+		try {
+			ResultSetMetaData rsmd = rs.getMetaData();
+			int columnCount = rsmd.getColumnCount();
+			
+			// 注意ResultSet中列的编号是从1开始的
+			for (int i = 1; i <= columnCount; i++) {
+				String columnName = rsmd.getColumnName(i);
+				System.out.println(columnName);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
 	}
 }
