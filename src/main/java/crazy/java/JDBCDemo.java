@@ -1,6 +1,7 @@
 package crazy.java;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,8 +12,8 @@ import java.sql.Statement;
  * 
  */
 public class JDBCDemo {
-
-	public static void main(String[] args) throws ClassNotFoundException, SQLException {
+	
+	void baseUse() throws ClassNotFoundException, SQLException {
 		/*
 		 * step1:加载特定数据库的JDBC驱动
 		 * 有三种加载JDBC驱动的方法，以下是最常用的方法
@@ -75,5 +76,37 @@ public class JDBCDemo {
 		rs.close();
 		stmt.close();
 		conn.close();
+	}
+
+	public static void main(String[] args) throws ClassNotFoundException, SQLException {
+		ResultSet rs = JDBCUtils.getRs();
+		System.out.print(rs.getClass().getName());
+	}
+}
+
+class JDBCUtils {
+	public static Connection getConnection() {
+		Connection conn = null;
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			String url = "jdbc:mysql://127.0.0.1:3306/sys";
+			String user = "root";
+			String password = "root";
+			conn = DriverManager.getConnection(url, user, password);
+		} catch (Exception e) {
+			throw new RuntimeException("获取数据库连接失败！", e);
+		}
+		return conn;
+	}
+	
+	public static ResultSet getRs() {
+		try (Connection conn = getConnection()) {
+			DatabaseMetaData databaseMetaData = conn.getMetaData();
+			
+			ResultSet rs = databaseMetaData.getTables(null, null, "%", new String[] {"table"});
+			return rs;
+		} catch (Exception e) {
+			throw new RuntimeException("获得结果集失败！", e);
+		}
 	}
 }
