@@ -8,7 +8,9 @@ public class CalendarDemo {
 		
 		// Calendar是一个抽象类，只能通过getInstance()来获得一个实例
 		Calendar calendar = Calendar.getInstance();
-		//
+		// Calendar中有很多常量，用于表示跟日历有关的特定内容
+		// 以下只是一些常用的
+		
 		int year = calendar.get(Calendar.YEAR);
 		int month = calendar.get(Calendar.MONTH);
 		int day = calendar.get(Calendar.DATE);
