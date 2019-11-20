@@ -9,7 +9,12 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 public class FastJsonDemo {
-
+	/*
+	 * FastJson是广泛使用的处理json的jar包
+	 * 
+	 * JSONArray：相当于List<Object>
+	 * JSONObject：相当于Map<String, Object>
+	 */
 	public static void main(String[] args) {
 		testMap();
 	}
