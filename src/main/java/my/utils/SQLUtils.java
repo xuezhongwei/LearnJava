@@ -133,7 +133,8 @@ public class SQLUtils {
 		StringBuilder columns = new StringBuilder();
 		StringBuilder values = new StringBuilder();
 		try {
-			rs = dbmd.getColumns(null, "%", "eb_ent_price_template_temp", "%");
+			String tableName = "eb_ent_price_template_temp";
+			rs = dbmd.getColumns(null, "%", tableName, "%");
 			while(rs.next()){
 	            //列名
 	            String columnName = rs.getString("COLUMN_NAME");
