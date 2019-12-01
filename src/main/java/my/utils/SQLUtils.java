@@ -12,15 +12,14 @@ public class SQLUtils {
 	public static void main(String[] args) throws SQLException {
 		Connection conn = getConnection();
 		Statement state = conn.createStatement();
-		String sql = "select * from test";
-		ResultSet rs = state.executeQuery(sql);
-		
+
 		DatabaseMetaData dbmd = conn.getMetaData();
-		//printTableToModel(dbmd);
+		String tableName = "customer";
+		printTableToModel(dbmd, tableName);
 		//printMapperResultMap(dbmd);
 		//printMapperInsertSql(dbmd);
 		//printAllTableInfo(dbmd);
-		printResultSetColumnName(rs);
+		//printResultSetColumnName(rs);
 		state.close();
 		conn.close();
 	}
@@ -28,10 +27,11 @@ public class SQLUtils {
 	public static Connection getConnection() {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			
-			String url = "jdbc:mysql://127.0.0.1:3306/lanyuan";
+			String dataBase = "smart4j";
 			String user = "root";
 			String password = "root";
+			
+			String url = "jdbc:mysql://127.0.0.1:3306/" + dataBase;
 			
 			Connection conn = DriverManager.getConnection(url, user, password);
 			if (null != conn) {
@@ -50,12 +50,12 @@ public class SQLUtils {
 	 * 例如：字段名，字段类型，注释
 	 * @param databaseMetaData
 	 */
-	public static void printTableToModel(DatabaseMetaData databaseMetaData) {
+	public static void printTableToModel(DatabaseMetaData databaseMetaData, String tableName) {
 		ResultSet rs;
 		try {
 			// getColums最一般的用法
 			// getColums(null, null, tableName, "%") 获得某个表的所有字段信息
-			rs = databaseMetaData.getColumns(null, null, "eb_ent_price_template_temp", "%");
+			rs = databaseMetaData.getColumns(null, null, tableName, "%");
 			while(rs.next()){
 				// 更多信息请查阅文档
 	            // 列名
@@ -65,7 +65,7 @@ public class SQLUtils {
 	            // 注释
 	            String remarks = rs.getString("REMARKS");
 	            
-	            System.out.println(columnName + " " + typeName + " " + remarks);
+	            //System.out.println(columnName + " " + typeName + " " + remarks);
 	            
 	            // 拼接model字符串
 	            String comments = "/**\n" + " * " + remarks + "\n */\n"; 
@@ -75,6 +75,8 @@ public class SQLUtils {
 	            	var += "Long ";
 	            } else if (typeName.equalsIgnoreCase("DECIMAL")) {
 	            	var += "BigDecimal ";
+	            } else if (typeName.equalsIgnoreCase("int")) {
+	            	var += "Integer";
 	            } else {
 	            	var += "String ";
 	            }
@@ -97,10 +99,10 @@ public class SQLUtils {
 	 * 生成与数据库表对应的mybatis mapper <resultMap/>字符串
 	 * @param dbmd
 	 */
-	public static void printMapperResultMap(DatabaseMetaData dbmd) {
+	public static void printMapperResultMap(DatabaseMetaData dbmd, String tableName) {
 		ResultSet rs;
 		try {
-			rs = dbmd.getColumns(null, "%", "eb_ent_price_template_temp", "%");
+			rs = dbmd.getColumns(null, "%", tableName, "%");
 			while(rs.next()){
 	            //列名
 	            String columnName = rs.getString("COLUMN_NAME");
