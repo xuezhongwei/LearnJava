@@ -78,7 +78,6 @@
 	</dependency>
 	
 	<dependency>
-<<<<<<< HEAD
 	  <groupId>org.apache.commons</groupId>
 	  <artifactId>commons-lang3</artifactId>
 	  <version>3.9</version>
@@ -99,12 +98,10 @@
         <artifactId>easypoi-annotation</artifactId>
         <version>3.2.0</version>
     </dependency>
-=======
+    <dependency>
 	    <groupId>commons-dbutils</groupId>
 	    <artifactId>commons-dbutils</artifactId>
 	    <version>1.7</version>
 	</dependency>
-	
->>>>>>> branch 'master' of https://github.com/xuezhongwei/LearnJava.git
   </dependencies>
 </project>
