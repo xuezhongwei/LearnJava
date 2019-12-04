@@ -198,6 +198,21 @@ public class SQLUtils {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static <T> T toBean(ResultSet rs, Class<T> clazz) {
+		T bean = null;
+		try {
+			bean = clazz.newInstance();
+			
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
+		return bean;
 	}
 }
