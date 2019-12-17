@@ -1,5 +1,8 @@
 package my.utils;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -8,6 +11,8 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import test.CustomerModel;
+
 public class SQLUtils {
 	public static void main(String[] args) throws SQLException {
 		Connection conn = getConnection();
@@ -15,10 +20,18 @@ public class SQLUtils {
 
 		DatabaseMetaData dbmd = conn.getMetaData();
 		String tableName = "customer";
-		printTableToModel(dbmd, tableName);
+		//printTableToModel(dbmd, tableName);
 		//printMapperResultMap(dbmd);
 		//printMapperInsertSql(dbmd);
 		//printAllTableInfo(dbmd);
+		
+		  String sql = "select * from customer"; ResultSet rs =
+		  state.executeQuery(sql); 
+		  while(rs.next()) { 
+			  CustomerModel customer =  betterConvertToBean(rs, CustomerModel.class); 
+			  System.out.println(customer.toString());
+		  }
+		 
 		//printResultSetColumnName(rs);
 		state.close();
 		conn.close();
@@ -199,20 +212,132 @@ public class SQLUtils {
 			e.printStackTrace();
 		}
 	}
-	
-	public static <T> T toBean(ResultSet rs, Class<T> clazz) {
+	/**
+	 * 将ResultSet转为bean，基础版
+	 * 适用于无继承的bean，如果有继承，则父类中的属性是不会被设值的
+	 * 
+	 * 思路：根据model里包含的属性名，去ResultSet中找到同名的列，然后调用setter方法设值
+	 */
+	public static <T> T baseConvertToBean(ResultSet rs, Class<T> clazz) {
 		T bean = null;
 		try {
 			bean = clazz.newInstance();
 			
-		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
+			ResultSetMetaData rsmd = rs.getMetaData();
+			
+			int countColumns = rsmd.getColumnCount();
+			
+			// 这里要注意一下，getDeclaredFields与getFields是用区别的
+			// getDeclaredFields获得的是类中直接声明的属性，不包括继承而来的属性
+			Field[] fields = clazz.getDeclaredFields();
+			if (fields.length != 0) {
+				for (Field field : fields) {
+					String fieldName = field.getName();
+					
+					for (int i = 1; i <= countColumns; i++) {
+						String columnName = "";
+						if (rsmd.getColumnLabel(i) != null && !"".equals(rsmd.getColumnLabel(i))) {
+							columnName = rsmd.getColumnLabel(i);
+						} else {
+							columnName = rsmd.getColumnName(i);
+						}
+						
+						if (fieldName.equals(columnName)) {
+							Class<?> fieldType = field.getType();
+							
+							String setMethodName = "set" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+							
+							// 一个类在vm中，只存在一个Class实例，所以可用==
+							// bean中最常用四种类型：String，BigDecimal，Long，Integer
+							if (fieldType == String.class) {
+								Method setter = clazz.getMethod(setMethodName, fieldType);
+								setter.invoke(bean, rs.getString(i));
+							} else if (fieldType == BigDecimal.class) {
+								Method setter = clazz.getMethod(setMethodName, fieldType);
+								setter.invoke(bean, rs.getBigDecimal(i));
+							} else if (fieldType == Long.class || fieldType == long.class) {
+								Method setter = clazz.getMethod(setMethodName, fieldType);
+								setter.invoke(bean, rs.getLong(i));
+							} else if (fieldType == Integer.class || fieldType == int.class) {
+								Method setter = clazz.getMethod(setMethodName, fieldType);
+								setter.invoke(bean, rs.getInt(i));
+							}
+						}
+					}
+					
+				}
+			}
+			
+		} catch (Exception e) {
 			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		} 
 		
 		return bean;
 	}
+	
+	/**
+	 * 将ResultSet转为bean，加強版
+	 * 无论bean有无继承都适用
+	 * 
+	 * 思路：根据model里包含的属性名，去ResultSet中找到同名的列，然后调用setter方法设值
+	 */
+	public static <T> T betterConvertToBean(ResultSet rs, Class<T> clazz) {
+		T bean = null;
+		try {
+			bean = clazz.newInstance();
+			
+			ResultSetMetaData rsmd = rs.getMetaData();
+			
+			int countColumns = rsmd.getColumnCount();
+			
+			Class tempLoop = clazz;
+			while (tempLoop != Object.class) {
+			// 这里要注意一下，getDeclaredFields与getFields是用区别的
+			// getDeclaredFields获得的是类中直接声明的属性，不包括继承而来的属性
+				Field[] fields = tempLoop.getDeclaredFields();
+				
+				if (fields.length != 0) {
+					for (Field field : fields) {
+						String fieldName = field.getName();
+						
+						for (int i = 1; i <= countColumns; i++) {
+							String columnName = "";
+							if (rsmd.getColumnLabel(i) != null && !"".equals(rsmd.getColumnLabel(i))) {
+								columnName = rsmd.getColumnLabel(i);
+							} else {
+								columnName = rsmd.getColumnName(i);
+							}
+							
+							if (fieldName.equals(columnName)) {
+								Class<?> fieldType = field.getType();
+								
+								String setMethodName = "set" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+								
+								// 一个类在vm中，只存在一个Class实例，所以可用==
+								// bean中最常用四种类型：String，BigDecimal，Long，Integer
+								if (fieldType == String.class) {
+									Method setter = tempLoop.getMethod(setMethodName, fieldType);
+									setter.invoke(bean, rs.getString(i));
+								} else if (fieldType == BigDecimal.class) {
+									Method setter = tempLoop.getMethod(setMethodName, fieldType);
+									setter.invoke(bean, rs.getBigDecimal(i));
+								} else if (fieldType == Long.class || fieldType == long.class) {
+									Method setter = tempLoop.getMethod(setMethodName, fieldType);
+									setter.invoke(bean, rs.getLong(i));
+								} else if (fieldType == Integer.class || fieldType == int.class) {
+									Method setter = tempLoop.getMethod(setMethodName, fieldType);
+									setter.invoke(bean, rs.getInt(i));
+								}
+							}
+						}
+					}
+				}
+				tempLoop = tempLoop.getSuperclass();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
+		return bean;
+	}
+	
 }

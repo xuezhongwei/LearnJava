@@ -11,7 +11,7 @@ import java.sql.Statement;
  * JDBC编程模板
  * 
  */
-public class Test {
+public class TestAny {
 
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
 		test2();
