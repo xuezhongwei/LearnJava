@@ -1,4 +1,4 @@
-package api.spring.service;
+package api.spring.ioc;
 
 public class SteelAxe implements Axe{
 

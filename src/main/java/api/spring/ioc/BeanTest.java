@@ -1,4 +1,4 @@
-package api.spring.service;
+package api.spring.ioc;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
