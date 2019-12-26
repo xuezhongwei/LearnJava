@@ -1,10 +1,10 @@
-package api.spring.ioc;
+package api.spring.ioc.xml;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 @Component
 public class DataSource {
-	@Value("123456")
+	@Value("${user}")
 	private String user;
 
 	@Override

@@ -1,4 +1,4 @@
-package api.spring.ioc;
+package api.spring.ioc.xml;
 
 import java.util.List;
 import java.util.Map;
