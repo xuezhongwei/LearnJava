@@ -124,6 +124,29 @@
 	    <artifactId>spring-asm</artifactId>
 	    <version>3.1.4.RELEASE</version>
 	</dependency>
-		
+	<!-- spring aop -->
+	<dependency>
+	    <groupId>org.springframework</groupId>
+	    <artifactId>spring-aop</artifactId>
+	    <version>5.2.2.RELEASE</version>
+	</dependency>
+	
+	<dependency>
+	    <groupId>org.aspectj</groupId>
+	    <artifactId>aspectjrt</artifactId>
+	    <version>1.9.3</version>
+	</dependency>
+	<dependency>
+	    <groupId>org.aspectj</groupId>
+	    <artifactId>aspectjweaver</artifactId>
+	    <version>1.9.3</version>
+	</dependency>
+	<!-- spring transaction -->
+	<dependency>
+	    <groupId>org.springframework</groupId>
+	    <artifactId>spring-tx</artifactId>
+	    <version>5.2.2.RELEASE</version>
+	</dependency>
+	
   </dependencies>
 </project>

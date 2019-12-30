@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- beans里的属性配置很重要 -->
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-4.3.xsd"
+	>
+	<context:component-scan base-package="api.spring.properties"></context:component-scan>
+	<!-- 加载配置文件 -->
+	<!-- 第一种加载方式 -->
+	<context:property-placeholder location="classpath:api/spring/properties/config1.properties,classpath:api/spring/properties/config2.properties"/> 
+	
+	<!-- 第二种加载方式 -->
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<!-- 注意属性名是locations -->
+		<property name="locations">
+			<array>
+				<value>classpath:api/spring/properties/config1.properties</value>
+				<value>classpath:api/spring/properties/config2.properties</value>
+			</array>
+		</property>
+	</bean>
+</beans>

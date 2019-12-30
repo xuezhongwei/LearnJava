@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- beans里的属性配置很重要 -->
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-4.3.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop-4.3.xsd"
+	>
+	<context:component-scan base-package="api.spring.aop" />
+	<!-- 启用@AspectJ注解的支持-->
+	<aop:aspectj-autoproxy/>
+	
+	<bean id="testAspect" class="api.spring.aop.TestAspect"></bean>
+	<aop:config>
+		<!-- aop:pointcut,aop:advisor,aop:aspect要按先后顺序定义 -->
+		<!-- 定义全局的切入点 ，可以配置多个-->
+		<aop:pointcut expression="execution(* api.spring.aop.*.*(..))" id="pointcut"/>
+		<!-- 可以配置多个切面 -->
+		<aop:aspect ref="testAspect" order="1">
+			<!-- 定义局部切入点 -->
+			<aop:pointcut expression="execution(* api.spring.aop.*.*(..))" id="pointcut1"/>
+			<aop:before method="beforeAdvice" pointcut-ref="pointcut"/>
+			<aop:after method="afterAdvice" pointcut-ref="pointcut1"/>
+			<aop:after-returning method="afterReturningAdvice" pointcut-ref="pointcut1" returning="ret"/>
+			<aop:after-throwing method="afterThrowingAdvice" pointcut-ref="pointcut1" throwing="exception"/>
+		</aop:aspect>
+	</aop:config>	
+</beans>
