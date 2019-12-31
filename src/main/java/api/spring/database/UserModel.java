@@ -30,5 +30,9 @@ public class UserModel {
 	public void setTelephone(String telephone) {
 		this.telephone = telephone;
 	}
+	@Override
+	public String toString() {
+		return "UserModel [id=" + id + ", name=" + name + ", age=" + age + ", telephone=" + telephone + "]";
+	}
 	
 }

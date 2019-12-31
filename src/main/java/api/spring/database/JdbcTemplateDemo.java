@@ -39,8 +39,8 @@ public class JdbcTemplateDemo {
 		String sql = "select * from user;";
 		RowMapper<UserModel> rowMapper = new BeanPropertyRowMapper<>(UserModel.class);
 		List<UserModel> list = jdbcTemplate.query(sql, rowMapper);
-		for () {
-			
+		for (UserModel user : list) {
+			System.out.println(user.toString());
 		}
 	}
 }
