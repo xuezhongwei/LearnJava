@@ -28,4 +28,22 @@
 		<property name="initialPoolSize" value="${jdbc.initialPoolSize}"></property>
 		<property name="maxIdleTime" value="${jdbc.maxIdleTime}"></property>
 	</bean>
+	
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="*" propagation="REQUIRED" rollback-for="Exception"/>
+		</tx:attributes>
+	</tx:advice>
+	
+	<aop:config>
+		<aop:pointcut expression="execution(* api.spring.tx.*.*(..))" id="pointCut"/>
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="pointCut"/>
+	</aop:config>
+	
+	<!-- 当使用@Transactional注解实现事务时，需要如下配置 -->
+	<tx:annotation-driven transaction-manager="transactionManager"/>
 </beans>

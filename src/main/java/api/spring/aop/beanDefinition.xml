@@ -21,6 +21,7 @@
 		<!-- 定义全局的切入点 ，可以配置多个-->
 		<aop:pointcut expression="execution(* api.spring.aop.*.*(..))" id="pointcut"/>
 		<!-- 可以配置多个切面 -->
+		<!-- 当有多个切面，且有相同的连接点，可以通过设置order，来指定多个切面的执行顺序，若不指定就是随机执行 -->
 		<aop:aspect ref="testAspect" order="1">
 			<!-- 定义局部切入点 -->
 			<aop:pointcut expression="execution(* api.spring.aop.*.*(..))" id="pointcut1"/>

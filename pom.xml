@@ -148,6 +148,12 @@
 	    <artifactId>spring-tx</artifactId>
 	    <version>5.2.2.RELEASE</version>
 	</dependency>
+	<!-- spring jdbc -->
+	<dependency>
+	    <groupId>org.springframework</groupId>
+	    <artifactId>spring-jdbc</artifactId>
+	    <version>5.2.2.RELEASE</version>
+	</dependency>
 	
 	<!-- apache poi -->
 	<dependency>
@@ -165,12 +171,6 @@
 	    <artifactId>poi-ooxml-schemas</artifactId>
 	    <version>4.1.1</version>
 	</dependency>
-	<!-- spring jdbc -->
-	<dependency>
-	    <groupId>org.springframework</groupId>
-	    <artifactId>spring-jdbc</artifactId>
-	    <version>5.2.2.RELEASE</version>
-	</dependency>
-		
+	
   </dependencies>
 </project>
