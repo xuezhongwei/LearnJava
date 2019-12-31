@@ -1,4 +1,4 @@
-package api.spring.tx;
+package api.spring.tx.basic;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;

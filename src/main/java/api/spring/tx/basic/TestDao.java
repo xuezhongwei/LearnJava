@@ -1,4 +1,4 @@
-package api.spring.tx;
+package api.spring.tx.basic;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
