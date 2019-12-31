@@ -8,7 +8,6 @@ public class Main {
 	public static void main(String[] args) {
 		ApplicationContext ctx = new ClassPathXmlApplicationContext("api/spring/database/beanDefinition.xml");
 		JdbcTemplateDemo jdbcDemo = ctx.getBean(JdbcTemplateDemo.class);
-		
+		jdbcDemo.insert();
 	}
-
 }
