@@ -24,15 +24,18 @@ public class ExcelDemo {
 	}
 	
 	public static void dealExcel() throws IOException {
+		// 获得Workbook
 		List<Workbook> workbookList = getWorkBook();
 		StringBuilder sb = new StringBuilder();
 		for (Workbook workbook : workbookList) {
-			int perFileCount = 0;
+			// 获得工作表
 			Sheet sheet = workbook.getSheetAt(0);
+			// 获得行
 			Row row = sheet.getRow(0);
 			int colNum = row.getLastCellNum();
 			int targetIndex = -1;
 			for (int i = 0; i < colNum; i++) {
+				// 获得单元格
 				Cell cell = row.getCell(i);
 				String colName = cell.getStringCellValue();
 				if ("融单编号".equals(colName)) {
@@ -44,10 +47,11 @@ public class ExcelDemo {
 				int rowNum = sheet.getLastRowNum();
 				for (int i = 1; i <= rowNum; i++) {
 					row = sheet.getRow(i);
+					// 注意，这里一定要判空
 					if (row != null) {
 						Cell targetCell = row.getCell(targetIndex);
+						// 注意，这里一定要判空
 						if (targetCell != null) {
-							perFileCount++;
 							String targetValue = targetCell.getStringCellValue();
 							sb.append("\"" + targetValue + "\",");
 							System.out.println(targetValue);
@@ -58,8 +62,6 @@ public class ExcelDemo {
 		}
 		String str = sb.substring(0, sb.lastIndexOf(","));
 		System.out.println("{" + str + "}");
-		System.out.println("select * from eb_bill_tx_list where tran_code = 'EB000034' and ebill_code in (" + str + ");");
-		System.out.println("select * from eb_voucher_record where template_no = 'B2' and biz_id in (" + str + ");");
 	}
 	
 	public static List<Workbook> getWorkBook() throws IOException {
@@ -69,26 +71,30 @@ public class ExcelDemo {
 
 		File[] files = loadFile(basePath);
 		for (File file : files) {
+			// 获得Excel文件的输入流
 			InputStream is = new FileInputStream(file);
 			String fileName = file.getName();
 			String expandedName = fileName.substring(fileName.lastIndexOf(".") + 1);
 			if (SUFFIX_XLS.equals(expandedName)) {
+				// xls文件用HSSFWorkbook处理
 				HSSFWorkbook hssf = new HSSFWorkbook(is);
 				workbookList.add(hssf);
 			} else if (SUFFIX_XLSX.equals(expandedName)) {
+				// xlsx文件用XSSFWorkbook处理
 				XSSFWorkbook xssf = new XSSFWorkbook(is);
 				workbookList.add(xssf);
 			}
 		}
 		return workbookList;
 	}
+	
 	public static File[] loadFile(String basePath) {
 		File file = new File(basePath);
 		if (file.isDirectory()) {
 			File[] files = file.listFiles(new FileFilter() {
 				@Override
 				public boolean accept(File pathname) {
-					// 返回是目录或者xls或者xlsx文件
+					// 返回xls或者xlsx文件
 					boolean flag = (pathname.getName().substring(pathname.getName().lastIndexOf(".") + 1).equals("xls")
 							|| pathname.getName().substring(pathname.getName().lastIndexOf(".") + 1).equals("xlsx"))
 							;
@@ -100,6 +106,4 @@ public class ExcelDemo {
 			return new File[] {file};
 		}
 	}
-	// 获取某个目录下所有指定类型的文件
-	
 }
