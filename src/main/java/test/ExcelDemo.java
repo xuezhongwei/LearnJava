@@ -5,7 +5,10 @@ import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -20,7 +23,8 @@ public class ExcelDemo {
 	private static String SUFFIX_XLSX = "xlsx";
 	
 	public static void main(String[] args) throws IOException {
-		dealExcel();
+		//dealExcel();
+		installEbEntShareReportSql("C:\\Users\\29507\\Desktop\\二级融资返点报表-9.30-格力2.xls");
 	}
 	
 	public static void dealExcel() throws IOException {
@@ -113,8 +117,91 @@ public class ExcelDemo {
 	
 	/**
 	 * 生成修复融资返点报表数据SQL
+	 * filePath:运营提供的修复数据的excel文件路径
+	 * @throws IOException 
 	 */
-	public static void installEbEntShareReportSql(String filePath) {
-		File
+	public static void installEbEntShareReportSql(String filePath) throws IOException {
+		File file = new File(filePath);
+		InputStream is = new FileInputStream(file);
+		String fileName = file.getName();
+		String expandedName = fileName.substring(fileName.lastIndexOf(".") + 1);
+		Workbook workBook = null;
+		if (SUFFIX_XLS.equals(expandedName)) {
+			// xls文件用HSSFWorkbook处理
+			workBook = new HSSFWorkbook(is);
+		} else if (SUFFIX_XLSX.equals(expandedName)) {
+			// xlsx文件用XSSFWorkbook处理
+			workBook = new XSSFWorkbook(is);
+		}
+		
+		// 获得工作表
+		Sheet sheet = workBook.getSheetAt(0);
+		// 获得行
+		Row row = sheet.getRow(0);
+		int colNum = row.getLastCellNum();
+		int targetIndexEbillCode = -1;
+		int targetIndexDelayFeeIncome = -1;
+		int targetIndexDelayInterestIncome = -1;
+		int targetIndexDelayDays = -1;
+		int targetIndexInterestShareAmt = -1;
+		
+		for (int i = 0; i < colNum; i++) {
+			// 获得单元格
+			Cell cell = row.getCell(i);
+			String colName = cell.getStringCellValue();
+			if ("融单编号".equals(colName)) {
+				targetIndexEbillCode = i;
+			}
+			if ("延期费用收益".equals(colName)) {
+				targetIndexDelayFeeIncome = i;
+			}
+			if ("延期利息收益".equals(colName)) {
+				targetIndexDelayInterestIncome = i;
+			}
+			if ("延期天数".equals(colName)) {
+				targetIndexDelayDays = i;
+			}
+			if ("保理返点金额".equals(colName)) {
+				targetIndexInterestShareAmt = i;
+			}
+		}
+		System.out.println("comme here");
+		if (targetIndexEbillCode != -1 && targetIndexDelayFeeIncome != -1 && targetIndexDelayInterestIncome != -1 && targetIndexDelayDays != -1 && targetIndexInterestShareAmt != -1) {
+			System.out.println("comme here111");
+			int rowNum = sheet.getLastRowNum();
+			for (int i = 1; i <= rowNum; i++) {
+				row = sheet.getRow(i);
+				// 注意，这里一定要判空
+				if (row != null) {
+					Cell ebillCodeCell = row.getCell(targetIndexEbillCode);
+					Cell delayFeeIncomeCell = row.getCell(targetIndexDelayFeeIncome);
+					Cell delayInterestIncomeCell = row.getCell(targetIndexDelayInterestIncome);
+					Cell delayDaysCell = row.getCell(targetIndexDelayDays);
+					Cell interestShareAmtCell = row.getCell(targetIndexInterestShareAmt);
+					
+					// 注意，这里一定要判空
+					if (ebillCodeCell != null && delayFeeIncomeCell != null) {
+						String ebillCode = ebillCodeCell.getStringCellValue();
+						double delayFeeIncome = delayFeeIncomeCell.getNumericCellValue();
+						double delayInterestIncome = delayInterestIncomeCell.getNumericCellValue();
+						int delayDays = (int)delayDaysCell.getNumericCellValue();
+						double interestShareAmt = interestShareAmtCell.getNumericCellValue();
+						
+						StringBuilder updateEntShareSql = new StringBuilder();
+						updateEntShareSql.append("update eb_ent_share_report set ");
+						updateEntShareSql.append("delay_days = '").append(delayDays).append("', ");
+						updateEntShareSql.append("delay_interest_income = '").append(delayInterestIncome).append("', ");
+						updateEntShareSql.append("delay_fee_income = '").append(delayFeeIncome).append("', ");
+						updateEntShareSql.append("interest_share_amt = '").append(interestShareAmt).append("', ");
+						DateFormat format = new SimpleDateFormat("yyyyMMdd");
+						String currentDate = format.format(new Date());
+						updateEntShareSql.append("remark = '").append(currentDate).append("修复数据' ");
+						updateEntShareSql.append("where ebill_code = '").append(ebillCode).append("';");
+						
+						System.out.println(updateEntShareSql.toString());
+					}
+				}
+			}
+		}
 	}
 }
