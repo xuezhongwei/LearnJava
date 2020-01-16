@@ -20,6 +20,7 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 	</environments>
 	<mappers>
 		<!-- 这里必须是以/作为路径分隔符 -->
+		<!-- 这里的mapper加载有多种写法 -->
 		<mapper resource="api/mybatis/testmapper.xml"/>
 	</mappers>
 	
