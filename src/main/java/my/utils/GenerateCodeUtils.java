@@ -31,7 +31,6 @@ public class GenerateCodeUtils {
 		try {
 			generateModel(packageName, tableName);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
