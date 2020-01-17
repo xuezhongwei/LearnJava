@@ -10,10 +10,18 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Properties;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import test.CustomerModel;
 
 public class SQLUtils {
+	private static Logger logger = LoggerFactory.getLogger(SQLUtils.class);
+	
+	private static final String HOME_USER = "29507";
+	
 	public static void main(String[] args) throws SQLException {
 		Connection conn = getConnection();
 		Statement state = conn.createStatement();
@@ -38,22 +46,39 @@ public class SQLUtils {
 	}
 	
 	public static Connection getConnection() {
+		Properties props = PropertiesUtils.loadProperties();
+		String userName = SystemUtils.getUserName();
+		
+		String driver = "";
+		String dataBase = "";
+		String user = "";
+		String password = "";
+		String url = "";
+		// 如果在家就取这个配置
+		if (HOME_USER.equals(userName)) {
+			driver = props.getProperty("home.jdbc.driver");
+			dataBase = props.getProperty("home.jdbc.database");
+			user = props.getProperty("home.jdbc.user");
+			password = props.getProperty("home.jdbc.password");
+			url = props.getProperty("home.jdbc.url");
+		} else {
+			driver = props.getProperty("office.home.jdbc.driver");
+			dataBase = props.getProperty("office.jdbc.database");
+			user = props.getProperty("office.jdbc.user");
+			password = props.getProperty("office.jdbc.password");
+			url = props.getProperty("office.jdbc.url");
+		}
+			
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
-			String dataBase = "smart4j";
-			String user = "root";
-			String password = "root";
-			
-			String url = "jdbc:mysql://127.0.0.1:3306/" + dataBase;
-			
-			Connection conn = DriverManager.getConnection(url, user, password);
+			Class.forName(driver);
+			Connection conn = DriverManager.getConnection(url + dataBase, user, password);
 			if (null != conn) {
-				System.out.println("数据库连接成功！");
+				logger.info("数据库连接成功！");
 			}
 			return conn;
 		} catch (Exception e) {
-			System.out.println("数据库连接失败！");
-			throw new RuntimeException("", e);
+			logger.error("数据库连接失败！");
+			throw new RuntimeException("数据库连接失败！", e);
 		}
 	}
 	/**

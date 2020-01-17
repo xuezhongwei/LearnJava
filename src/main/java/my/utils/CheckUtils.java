@@ -1,6 +1,6 @@
 package my.utils;
 
-public class CheckUtils {
+public final class CheckUtils {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -34,4 +34,7 @@ public class CheckUtils {
 		}
 	}
 	
+	private CheckUtils() {
+		// 工具类不让实例化
+	}
 }

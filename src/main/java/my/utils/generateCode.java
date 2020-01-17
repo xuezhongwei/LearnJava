@@ -1,4 +1,4 @@
-package api.mybatis;
+package my.utils;
 
 /**
  * 生成mybatis相关代码
