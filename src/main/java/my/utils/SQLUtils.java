@@ -16,7 +16,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import test.CustomerModel;
-
+/**
+ * 与数据库操作相关的工具类
+ *
+ * 数据库资源使用完了，一定要关闭
+ * 关闭的顺序是:ResultSet,Statement,Connection
+ * 如果关闭Statement之后，ResultSet会自动关闭；关闭Connection之后，Statement不会自动关闭，但是Connection关闭之后，Statement将无法使用
+ */
 public class SQLUtils {
 	private static Logger logger = LoggerFactory.getLogger(SQLUtils.class);
 	
@@ -44,7 +50,9 @@ public class SQLUtils {
 		state.close();
 		conn.close();
 	}
-	
+	/**
+	 * 获得数据库连接 
+	 */
 	public static Connection getConnection() {
 		Properties props = PropertiesUtils.loadProperties();
 		String userName = SystemUtils.getUserName();
@@ -62,7 +70,7 @@ public class SQLUtils {
 			password = props.getProperty("home.jdbc.password");
 			url = props.getProperty("home.jdbc.url");
 		} else {
-			driver = props.getProperty("office.home.jdbc.driver");
+			driver = props.getProperty("office.jdbc.driver");
 			dataBase = props.getProperty("office.jdbc.database");
 			user = props.getProperty("office.jdbc.user");
 			password = props.getProperty("office.jdbc.password");
@@ -365,4 +373,36 @@ public class SQLUtils {
 		return bean;
 	}
 	
+	public static void close(Connection conn) {
+		if (conn != null) {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				logger.error("close connection is failed.", e);
+				throw new RuntimeException("close connection is failed.", e);
+			}
+		}
+	}
+	
+	public static void close(Statement statement) {
+		if (statement != null) {
+			try {
+				statement.close();
+			} catch (SQLException e) {
+				logger.error("close statement is failed.", e);
+				throw new RuntimeException("close statement is failed.", e);
+			}
+		}
+	}
+	
+	public static void close(ResultSet rs) {
+		if (rs != null) {
+			try {
+				rs.close();
+			} catch (SQLException e) {
+				logger.error("close resultset is failed.", e);
+				throw new RuntimeException("close resultset is failed.", e);
+			}
+		}
+	}
 }

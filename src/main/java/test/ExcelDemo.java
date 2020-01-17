@@ -24,7 +24,7 @@ public class ExcelDemo {
 	
 	public static void main(String[] args) throws IOException {
 		//dealExcel();
-		installEbEntShareReportSql("C:\\Users\\29507\\Desktop\\二级融资返点报表-9.30-格力2.xls");
+		installEbEntShareReportSql("C:\\Users\\Dev-005\\Desktop\\【待修改】二级融资返点报表-0117.xls");
 	}
 	
 	public static void dealExcel() throws IOException {
@@ -165,9 +165,7 @@ public class ExcelDemo {
 				targetIndexInterestShareAmt = i;
 			}
 		}
-		System.out.println("comme here");
 		if (targetIndexEbillCode != -1 && targetIndexDelayFeeIncome != -1 && targetIndexDelayInterestIncome != -1 && targetIndexDelayDays != -1 && targetIndexInterestShareAmt != -1) {
-			System.out.println("comme here111");
 			int rowNum = sheet.getLastRowNum();
 			for (int i = 1; i <= rowNum; i++) {
 				row = sheet.getRow(i);
