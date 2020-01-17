@@ -4,7 +4,7 @@ package my.utils;
  * 生成mybatis相关代码
  *
  */
-public class generateCode {
+public class GenerateCodeUtils {
 	/**
 	 * （1）生成与数据库表对应的model
 	 * （2）生成与数据库表mapper.xml
