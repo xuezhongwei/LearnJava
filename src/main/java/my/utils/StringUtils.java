@@ -1,11 +1,14 @@
 package my.utils;
 
 public final class StringUtils {
-
-	public static void main(String[] args) {
-		String str = "xx";
-		System.out.print(convertToUpperCaseCamel(str));
-	}
+	public static final String FORMAT_TAB = "\t";
+	public static final String FORMAT_LF = "\n";
+	public static final String LEFT_BRACE = "{";
+	public static final String RIGTH_BRACE = "}";
+	public static final String SPACE = " ";
+	public static final String SEMICOLON = ";";
+	public static final String PATH_SEPARATOR = "/";
+	
 	/**
 	 * 判断字符串是否为空串
 	 */
@@ -52,5 +55,11 @@ public final class StringUtils {
             return target.toString();
 		}
 		return str;
+	}
+	
+
+	public static void main(String[] args) {
+		String str = "xx";
+		System.out.print(convertToUpperCaseCamel(str));
 	}
 }
