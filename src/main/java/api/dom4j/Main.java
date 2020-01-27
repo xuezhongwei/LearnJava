@@ -138,6 +138,9 @@ public class Main {
 		}
 	}
 	
+	/**
+	 * 通过xpath获得xml的节点
+	 */
 	public static void xpathXml() {
 		String filePath = "pom.xml";
 		Document doc = loadXmlFile(filePath);
@@ -146,7 +149,7 @@ public class Main {
 		System.out.println("size=" + nodes.size());
 		for (Node node : nodes) {
 			Element ele = (Element)node;
-			System.out.println(ele.asXML());
+			System.out.println(node.getName() + "====" + ele.asXML());
 		}
 	}
 }

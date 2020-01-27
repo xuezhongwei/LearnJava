@@ -193,5 +193,13 @@
 	    <version>2.1.0</version>
 	</dependency>
     
+    <!-- dom4j中使用xpath时，需要该jar -->
+	<dependency>
+	    <groupId>jaxen</groupId>
+	    <artifactId>jaxen</artifactId>
+	    <version>1.2.0</version>
+	</dependency>
+
+	    
   </dependencies>
 </project>
