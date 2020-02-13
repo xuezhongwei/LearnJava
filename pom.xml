@@ -199,7 +199,13 @@
 	    <artifactId>jaxen</artifactId>
 	    <version>1.2.0</version>
 	</dependency>
-
+	
+	<!-- 操作redis的api -->
+	<dependency>
+	    <groupId>redis.clients</groupId>
+	    <artifactId>jedis</artifactId>
+	    <version>3.0.1</version>
+	</dependency>
 	    
   </dependencies>
 </project>
