@@ -207,5 +207,12 @@
 	    <version>3.0.1</version>
 	</dependency>
 	    
+	<!-- mybatis-plus -->
+	<dependency>
+	    <groupId>com.baomidou</groupId>
+	    <artifactId>mybatis-plus</artifactId>
+	    <version>3.3.0</version>
+	</dependency>
+		
   </dependencies>
 </project>
