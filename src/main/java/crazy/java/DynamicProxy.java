@@ -4,7 +4,9 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.math.BigDecimal;
-
+/**
+ * JDK动态代理的实现
+ */
 public class DynamicProxy {
 	public static void main(String[] args) {
 		InvocationHandler invocationHandler = new HouseProxyInvocationHandler();
@@ -24,8 +26,6 @@ interface User {
 	String buyHouse(String houseAddress, BigDecimal price);
 	String sellHouse(String houseAddress, BigDecimal price);
 }
-
-
 
 class HouseProxyInvocationHandler implements InvocationHandler {
 	@Override
