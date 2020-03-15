@@ -1,9 +1,20 @@
 package api.mybatisplus;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+/**
+ * 与数据库表关联的model
+ */
+@TableName("user")
 public class UserModel {
+	@TableId
 	int id;
+	@TableField
 	String name;
+	@TableField
 	int age;
+	@TableField
 	String telephone;
 	
 	public int getId() {
