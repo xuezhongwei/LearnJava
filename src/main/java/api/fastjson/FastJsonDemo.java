@@ -63,6 +63,9 @@ public class FastJsonDemo {
 		
 		TestBean newBean = parseJson.getObject("testBean", TestBean.class);
 		System.out.println(newBean.getA());
+		
+		System.out.println("xxxx");
+		System.out.println(parseJson.getString("noexist"));
 	}
 	
 	static class TestBean {

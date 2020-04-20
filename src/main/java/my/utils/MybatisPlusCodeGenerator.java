@@ -14,7 +14,7 @@ public class MybatisPlusCodeGenerator {
 	 */
 	private static String outputDir = System.getProperty("user.dir") + "/src/test/java";
 	private static String author = "xuezw";
-	private static boolean swagger2Flag = true;
+	private static boolean swagger2Flag = false;
 	
 	private static String datasource_url = "jdbc:mysql://localhost:3306/meetingfilm?useUnicode=true&useSSL=false&characterEncoding=utf8";
 	private static String datasource_user = "root";
@@ -22,7 +22,7 @@ public class MybatisPlusCodeGenerator {
 	private static String datasource_driver = "com.mysql.jdbc.Driver";
 	
 	private static String moduleName = "user";
-	private static String parentPackage = "backend.common";
+	private static String parentPackage = "backend.common.dao";
 	
 	private static String tableName = "mooc_backend_user_t";
 
