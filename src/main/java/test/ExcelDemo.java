@@ -1,15 +1,23 @@
 package test;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -23,8 +31,9 @@ public class ExcelDemo {
 	private static String SUFFIX_XLSX = "xlsx";
 	
 	public static void main(String[] args) throws IOException {
-		//dealExcel();
-		installEbEntShareReportSql("C:\\Users\\Dev-005\\Desktop\\toHandleExcel\\【待修改】二级融资返点报表-0119.xls");
+		
+		dealExcel();
+		//installEbEntShareReportSql("C:\\Users\\Dev-005\\Desktop\\尾款自动融资协议编号查询.xlsx");
 	}
 	
 	public static void dealExcel() throws IOException {
@@ -34,6 +43,7 @@ public class ExcelDemo {
 		for (Workbook workbook : workbookList) {
 			// 获得工作表
 			Sheet sheet = workbook.getSheetAt(0);
+			/*
 			// 获得行
 			Row row = sheet.getRow(0);
 			int colNum = row.getLastCellNum();
@@ -50,6 +60,7 @@ public class ExcelDemo {
 					targetIndexY = i;
 				}
 			}
+			
 			if (targetIndexX != -1 && targetIndexY != -1) {
 				int rowNum = sheet.getLastRowNum();
 				for (int i = 1; i <= rowNum; i++) {
@@ -69,6 +80,28 @@ public class ExcelDemo {
 					}
 				}
 			}
+			*/
+			Map<String, String> ebillMap = loadMidData();
+			int rowNum = sheet.getLastRowNum();
+			for (int i = 1; i <= rowNum; i++) {
+				Row row = sheet.getRow(i);
+				// 注意，这里一定要判空
+				if (row != null) {
+					Cell ebillCodeCell = row.getCell(0);
+					Cell delayFeeIncomeCell = row.getCell(2);
+					
+					// 注意，这里一定要判空
+					if (ebillCodeCell != null) {
+						String ebillCode = ebillCodeCell.getStringCellValue();
+						String agreementCode = ebillMap.get(ebillCode);
+						delayFeeIncomeCell.setCellValue(agreementCode);
+						System.out.println(ebillCode);
+					}
+				}
+			}
+			OutputStream os = new FileOutputStream("C:\\Users\\Dev-005\\Desktop\\尾款自动融资协议编号查询 - 副本.xlsx");
+			workbook.write(os);
+			os.flush();
 		}
 		//String str = sb.substring(0, sb.lastIndexOf(","));
 		//System.out.println("{" + str + "}");
@@ -77,7 +110,7 @@ public class ExcelDemo {
 	public static List<Workbook> getWorkBook() throws IOException {
 		List<Workbook> workbookList = new ArrayList<>();
 		
-		String basePath = "C:\\Users\\Dev-005\\Desktop\\12月修改融资返点报表数据";
+		String basePath = "C:\\Users\\Dev-005\\Desktop\\尾款自动融资协议编号查询.xlsx";
 
 		File[] files = loadFile(basePath);
 		for (File file : files) {
@@ -208,5 +241,26 @@ public class ExcelDemo {
 				System.out.println("ebillCodes = " + ebillCodes.substring(0, ebillCodes.lastIndexOf(",")));
 			}
 		}
+	}
+	
+	private static Map<String,String> loadMidData() throws IOException {
+		String path = "C:\\Users\\Dev-005\\Desktop\\2020-04-26 尾款自动融资协议编号查询.txt";
+		File file = new File(path);
+		InputStream is = new FileInputStream(file);
+		// 使用
+		BufferedReader br = new BufferedReader(new InputStreamReader(is)); 
+		
+		Map<String, String> retMap = new HashMap<>();
+		
+		String line = null;
+		while((line = br.readLine()) != null) {
+			String[] strs = line.split(",");
+			if (strs.length == 2) {
+				retMap.put(strs[0], strs[1]);
+			} else {
+				retMap.put(strs[0], "");
+			}
+		}
+		return retMap;
 	}
 }
