@@ -1,19 +1,28 @@
 package api.itext;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
+
+import org.xhtmlrenderer.pdf.ITextFontResolver;
+import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chapter;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Font;
+import com.itextpdf.text.FontProvider;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Section;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.tool.xml.XMLWorkerHelper;
 
 public class ItextDemo {
 
@@ -84,28 +93,59 @@ public class ItextDemo {
 	}	
 	
 	/**
-	    * html转换成PDF
-	    * @param htmlFile html文件
-	    * @param pdfPath  pdf路径
-	    * @throws Exception 异常
-	    */
-	   public static void htmlToPdf(File htmlFile, String pdfPath) throws Exception {
+    * html转换成PDF
+    * @param htmlFile html文件
+    * @param pdfPath  pdf路径
+    * @throws Exception 异常
+    */
+   public static void htmlToPdf(File htmlFile, String pdfPath) throws Exception {
 
-	       OutputStream os = new FileOutputStream(pdfPath);
-	       ITextRenderer iTextRenderer = new ITextRenderer();
-	       iTextRenderer.setDocument(htmlFile);
+       OutputStream os = new FileOutputStream(pdfPath);
+       ITextRenderer iTextRenderer = new ITextRenderer();
+       iTextRenderer.setDocument(htmlFile);
+       
+       String currentOS = System.getProperty("os.name").toLowerCase();
+       //解决中文编码
+       ITextFontResolver fontResolver = iTextRenderer.getFontResolver();
+       if ("linux".equals(currentOS)) {
+           fontResolver.addFont("/usr/share/fonts/chiness/simsun.ttc", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+       } else {
+           fontResolver.addFont("c:/Windows/Fonts/simsun.ttc", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+       }
 
-	       //解决中文编码
-	       ITextFontResolver fontResolver = iTextRenderer.getFontResolver();
-	       if ("linux".equals(getCurrentOperationSystem())) {
-	           fontResolver.addFont("/usr/share/fonts/chiness/simsun.ttc", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-	       } else {
-	           fontResolver.addFont("c:/Windows/Fonts/simsun.ttc", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
-	       }
-
-	       iTextRenderer.layout();
-	       iTextRenderer.createPDF(os);
-	       os.flush();
-	       os.close();
-	   }
+       iTextRenderer.layout();
+       iTextRenderer.createPDF(os);
+       os.flush();
+       os.close();
+   }
+   
+   public static ByteArrayOutputStream build(String text) throws Exception {
+	   ByteArrayOutputStream os = new ByteArrayOutputStream();
+	   Document document = new Document();
+	   PdfWriter mPdfWriter = PdfWriter.getInstance(document, os);
+	   document.open();
+	   ByteArrayInputStream bin = new ByteArrayInputStream(text.getBytes());
+	   XMLWorkerHelper.getInstance().parseXHtml(mPdfWriter, document, bin, StandardCharsets.UTF_8, new ChinaFontProvide());
+	   document.close();
+	   mPdfWriter.close();
+	   return os;
+   }
+   
+   public static final class ChinaFontProvide implements FontProvider {
+		@Override
+		public boolean isRegistered(String fontname) {
+			return false;
+		}
+		
+		@Override
+		public Font getFont(String fontname, String encoding, boolean embedded, float size, int style, BaseColor color) {
+			BaseFont bfChinese = null;
+			try {
+				bfChinese = BaseFont.createFont("STSong-Light", "UniGB-UCS2-H", BaseFont.NOT_EMBEDDED);
+			} catch (Exception e) {
+				// TODO
+			}
+			return new Font(bfChinese, 12, Font.NORMAL);
+		}
+   }
 }
