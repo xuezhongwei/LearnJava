@@ -6,13 +6,18 @@ import java.net.URL;
 import java.util.Enumeration;
 import java.util.Map;
 
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
+import com.sun.xml.internal.ws.api.pipe.NextAction;
+
 public class Test1 {
 
 	public static void main(String[] args) throws IOException {
-		//boolean flag = isPalindrome(121);
-		System.out.println(reverse1(-2147483648));
-		//test();
+		String dividend = "mississippi";
+		String divisor = "issi";
+		System.out.println(strStr(dividend, divisor));
+		
 	}
+	
 	public static boolean isPalindrome(int x) {
         if (x < 0) {
             return false;
@@ -104,4 +109,168 @@ public class Test1 {
 		}
 		return fib2(n-1) + fib2(n-1);
 	}
+	
+	public static String longestPalindrome(String s) {
+        if (null == s || s.length() == 0) {
+        	return "";
+        }
+        
+        int maxLength = 0;
+        int start = 0;
+        int length = s.length();
+        for (int index = 0; index < length; index++) {
+        	int left = index;
+        	int right = index;
+        	int next_right = index + 1;
+        	
+        	int tempMax = 0;
+        	int tempStart = 0;
+        	
+        	int max1 = 0;
+        	int start1 = 0;
+        	int max2 = 0;
+        	int start2 = 0;
+        	
+        	while (left >= 0 && right < length && s.charAt(left) == s.charAt(right)) {
+        		max1 = right - left + 1;
+        		start1 = left;
+        		
+        		left--;
+        		right++;
+        	}
+        	
+        	left = index;
+        	while (left >= 0 && next_right < length && s.charAt(left) == s.charAt(next_right)) {
+        		max2 = next_right - left + 1;
+        		start2 = left;
+        		
+        		left--;
+        		next_right++;
+        	}
+        	if (max1 > max2) {
+        		tempMax = max1;
+        		tempStart = start1;
+        	} else {
+        		tempMax = max2;
+        		tempStart = start2;
+        	}
+        	
+        	if (tempMax > maxLength) {
+        		maxLength = tempMax;
+        		start = tempStart;
+        	}
+        }
+        return s.substring(start, start + maxLength);
+    }
+	
+	public static ListNode swapPairs(ListNode head) {
+        if (head.next == null) {
+            return head;
+        } 
+
+        ListNode newHead = new ListNode(-1);
+        newHead.next = head;
+        
+        ListNode left = head;
+        ListNode right = left.next;
+        ListNode mark = newHead;
+        
+        while (right != null && left != null) {
+        	ListNode temp = right.next;
+        	right.next = left;
+        	left.next = temp;
+        	
+        	mark.next = right;
+        	mark = left;
+        	
+        	left = left.next;
+        	if (left != null)
+        		right = left.next;
+        }
+        
+        return newHead.next;
+    }
+	
+	public static ListNode getNodeList() {
+		int[] val = new int[] {1,2,3,4};
+		ListNode head = new ListNode(val[0]);
+		ListNode tail = head;
+		for (int i=1; i<val.length; i++) {
+			ListNode newNode = new ListNode(val[i]);
+			newNode.next = null;
+			
+			tail.next = newNode;
+			tail = newNode;
+		}
+		return head;
+	}
+	
+	public static long divide(int dividend, int divisor) {
+		if (dividend == 0) {
+            return 0;
+        }
+		if (dividend == Integer.MIN_VALUE && divisor == -1) {
+            return Integer.MAX_VALUE;
+        }
+        int result = 0;
+        if (dividend > 0 && divisor < 0
+        		|| dividend < 0 && divisor > 0) {
+            int temp = dividend;
+            while (temp >= 0 && dividend >= 0 ||
+            		temp <= 0 && dividend <= 0) {
+                temp = temp + divisor;
+                result--;
+            }
+            return result + 1;
+        } else {
+            int temp = dividend;
+            while (temp >= 0 && dividend >= 0 ||
+            		temp <= 0 && dividend <= 0) {
+                temp = temp - divisor;
+                result++;
+            }
+            return result - 1;
+        }
+    }
+	
+	public static int strStr(String haystack, String needle) {
+        int length = haystack.length();
+        int length1 = needle.length();
+        if (length1 == 0) {
+            return 0;
+        }
+        if (length == 0 || length < length1) {
+            return -1;
+        }
+        int i = 0;
+        int j = 0;
+        while (i < length ) {
+            int point = i;
+            while (point < length && j < length1) {
+                if (haystack.charAt(point) == needle.charAt(j)) {
+                    point++;
+                    j++;
+                } else {
+                    j = 0;
+                }
+                if (j == length1 || j == 0) {
+                    break;
+                }
+            }
+            if (j == length1) {
+                break;
+            }
+            i++;
+        }
+        if (j == length1)
+            return i;
+        return -1;
+    }
+}
+
+class ListNode {
+int val;
+ListNode next;
+ListNode(int x) { val = x; }
+
 }
