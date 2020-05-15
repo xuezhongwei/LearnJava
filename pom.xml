@@ -245,6 +245,12 @@
         <groupId>org.xhtmlrenderer</groupId>
         <artifactId>flying-saucer-pdf</artifactId>
         <version>9.0.7</version>
-    </dependency>	
+    </dependency>
+    <!-- 使用itext对pdf加密，需要引入这个包 -->
+    <dependency>
+	     <groupId>org.bouncycastle</groupId>
+	     <artifactId>bcprov-jdk15on</artifactId>
+	     <version>1.54</version>
+	</dependency>
   </dependencies>
 </project>

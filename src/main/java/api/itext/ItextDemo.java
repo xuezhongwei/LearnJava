@@ -1,15 +1,19 @@
 package api.itext;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.Reader;
 import java.io.StringReader;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 import org.xhtmlrenderer.pdf.ITextFontResolver;
@@ -22,18 +26,179 @@ import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.FontProvider;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.List;
+import com.itextpdf.text.ListItem;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Section;
 import com.itextpdf.text.pdf.BaseFont;
+import com.itextpdf.text.pdf.PdfContentByte;
+import com.itextpdf.text.pdf.PdfReader;
+import com.itextpdf.text.pdf.PdfStamper;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.tool.xml.XMLWorkerHelper;
 
 public class ItextDemo {
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+	public static void main(String[] args) throws Exception {
+		test5();
 
 	}
+	
+	// 最简单应用
+	public static void test1() throws Exception {
+		// 新建document对象，代表一个PDF文档对象
+		Document document = new Document();
+		
+		// 建立一个pdfwriter与document对象关联，通过pdfwriter可以将文档写入到磁盘中
+		PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("./file/test1.pdf"));
+		
+		// 打开pdf文档
+		document.open();
+		
+		// 通过document的add方法，往pdf文档中添加内容
+		document.add(new Paragraph("Hello world!"));
+		
+		// 关闭文档
+		document.close();
+	}
+	
+	// 添加文档属性
+	public static void test2() throws Exception {
+		// 创建文件
+        Document document = new Document();
+        // 建立一个书写器
+        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("./file/test2.pdf"));
+        // 打开文件
+        document.open();
+        // 添加内容
+        document.add(new Paragraph("Some content here"));
+     
+        // 设置属性
+        // 标题
+        document.addTitle("this is a title");
+        // 作者
+        document.addAuthor("H__D");
+        // 主题
+        document.addSubject("this is subject");
+        // 关键字
+        document.addKeywords("Keywords");
+        // 创建时间
+        document.addCreationDate();
+        // 应用程序
+        document.addCreator("hd.com");
+        
+        // 关闭文档
+        document.close();
+	}
+	
+	// pdf文档中添加图片
+	public static void test3() throws Exception{
+		// 创建文件
+        Document document = new Document();
+        // 建立一个书写器
+        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("./file/test3.pdf"));
+        // 打开文件
+        document.open();
+        // 添加内容
+        document.add(new Paragraph("HD content here"));
+     
+        // 读取图片
+        Image image1 = Image.getInstance("./file/smile.JPG");
+        // 设置图片位置的x轴和y周
+        // 如果不设置，默认0,0
+        image1.setAbsolutePosition(0f, 550f);
+        // 设置图片的宽度和高度
+        image1.scaleAbsolute(200, 200);
+        // 将图片1添加到pdf文件中
+        document.add(image1);
+     
+        // 图片2
+        Image image2 = Image.getInstance("./file/cutegirl.gif");
+        // 将图片2添加到pdf文件中
+        document.add(image2);
+        
+        //关闭文档
+        document.close();
+        //关闭书写器
+        writer.close();
+	}
+	
+	// 在pdf文档中添加列表
+	public static void test4() throws Exception {
+		// 创建文件
+        Document document = new Document();
+        // 建立一个书写器
+        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("./file/test4.pdf"));
+        // 打开文件
+        document.open();
+        // 添加内容
+        document.add(new Paragraph("HD content here"));
+     
+        //添加有序列表
+        List orderedList = new List(List.ORDERED);
+        orderedList.add(new ListItem("Item one"));
+        orderedList.add(new ListItem("Item two"));
+        orderedList.add(new ListItem("Item three"));
+        document.add(orderedList);
+
+        //关闭文档
+        document.close();
+	}
+	
+	// 为PDF文档设置密码
+	public static void test5() throws Exception {
+		// 创建文件
+        Document document = new Document();
+        // 建立一个书写器
+        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("./file/test5.pdf"));
+
+        // 用户密码
+        String userPassword = "123456";
+        // 拥有者密码
+        String ownerPassword = "hd";
+        // 设置加密
+        writer.setEncryption(userPassword.getBytes(), ownerPassword.getBytes(), PdfWriter.ALLOW_PRINTING,
+                PdfWriter.ENCRYPTION_AES_128);
+
+        // 打开文件
+        document.open();
+        
+        //添加内容
+        document.add(new Paragraph("test password !!!!"));
+
+        // 关闭文档
+        document.close();
+	}
+	
+	// 读取、修改pdf
+	public static void test6() throws Exception {
+		// 读取pdf文件
+        PdfReader pdfReader = new PdfReader("C:/Users/H__D/Desktop/test1.pdf");
+     
+        // 修改器
+        PdfStamper pdfStamper = new PdfStamper(pdfReader, new FileOutputStream("C:/Users/H__D/Desktop/test10.pdf"));
+     
+        Image image = Image.getInstance("C:/Users/H__D/Desktop/IMG_0109.JPG");
+        image.scaleAbsolute(50, 50);
+        image.setAbsolutePosition(0, 700);
+     
+        for(int i=1; i<= pdfReader.getNumberOfPages(); i++)
+        {
+            PdfContentByte content = pdfStamper.getUnderContent(i);
+            content.addImage(image);
+        }
+     
+        pdfStamper.close();
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 
 	/**
 	 * 用于HTML直接转换为PDF文件
@@ -155,12 +320,15 @@ public class ItextDemo {
    
    // 为什么下边这种方式生成不了PDF
    public static void test() throws DocumentException, IOException {
-	   String outFilePath = "";
+	   String outFilePath = "./file/html.pdf";
 	   Document document = new Document();
 	   PdfWriter pdfWriter = PdfWriter.getInstance(document, new FileOutputStream(outFilePath));
 	   document.open();
-	   String html = "";
-	   StringReader isr = new StringReader(html);
+	   
+	   FileReader isr = new FileReader("./file/html.html");
+	   BufferedReader br = new BufferedReader(isr);
+	   System.out.println(br.readLine());
+	   
 	   XMLWorkerHelper.getInstance().parseXHtml(pdfWriter, document, isr);
 	   
    }
