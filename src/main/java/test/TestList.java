@@ -17,6 +17,8 @@ public class TestList {
 		list1.add("c");
 		
 		list1.stream().forEach(item->list2.add(item));
-		list2.stream().forEach(item->System.out.println(item));
+		list2.forEach(item->System.out.println(item));
+		
+		System.out.println("xxxx===" + list1.toString());
 	}
 }

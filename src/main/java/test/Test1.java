@@ -3,18 +3,19 @@ package test;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 import com.sun.xml.internal.ws.api.pipe.NextAction;
 
 public class Test1 {
-
+	char[] chs = new char[]{'(', ')'};
 	public static void main(String[] args) throws IOException {
-		String dividend = "mississippi";
-		String divisor = "issi";
-		System.out.println(strStr(dividend, divisor));
+		
 		
 	}
 	
@@ -265,6 +266,52 @@ public class Test1 {
         if (j == length1)
             return i;
         return -1;
+    }
+	
+	
+    public List<String> generateParenthesis(int n) {
+        List<String> ret = new ArrayList<>();
+        String temp = "";
+
+        return ret;
+    }
+
+    public static void backtrack(int n, List<String> ret, String temp) {
+        if (temp.length() == n *2) {
+            if (check(temp)) {
+                ret.add(temp);
+            }
+            return;
+        }
+        for (char ch : chs) {
+            String temp1 = temp;
+            temp += ch + "";
+            backtrack(n, ret, temp);
+            temp = temp1;
+        }
+    }
+
+    public static boolean check(String str) {
+        Stack<Character> stack = new Stack<>();
+        int length = str.length();
+        for (int i = 0; i < length; i++) {
+            if ('(' == str.charAt(i)) {
+                stack.push('(');
+            } else if (')' == str.charAt(i)) {
+                if (!stack.isEmpty()) {
+                    char top = stack.peek();
+                    if (top == '(') {
+                        stack.pop();
+                    } 
+                } else {
+                    return false;
+                }
+            }
+        }
+        if (!stack.isEmpty()) {
+            return false;
+        }
+        return true;
     }
 }
 
