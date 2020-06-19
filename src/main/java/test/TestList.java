@@ -20,5 +20,7 @@ public class TestList {
 		list2.forEach(item->System.out.println(item));
 		
 		System.out.println("xxxx===" + list1.toString());
+		System.out.println("xxxx===" + String.join(",", list2));
+		
 	}
 }
