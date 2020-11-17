@@ -34,7 +34,7 @@ public final class FileUtils {
 	}
 	
 	/**
-	 * 将字符串写入指定文件
+	 * 将字符串写入到指定路径的文件中
 	 */
 	public static void writeStrInFile(String str, String filePath) {
 		OutputStream os = null;

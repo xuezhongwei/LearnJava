@@ -1,16 +1,15 @@
 package test;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -25,6 +24,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import my.utils.FileUtils;
 
 public class ExcelDemo {
 	private static String SUFFIX_XLS = "xls";
@@ -43,74 +44,74 @@ public class ExcelDemo {
 		for (Workbook workbook : workbookList) {
 			// 获得工作表
 			Sheet sheet = workbook.getSheetAt(0);
-			/*
 			// 获得行
 			Row row = sheet.getRow(0);
 			int colNum = row.getLastCellNum();
 			int targetIndexX = -1;
 			int targetIndexY = -1;
+			int targetIndexZ = -1;
 			for (int i = 0; i < colNum; i++) {
 				// 获得单元格
 				Cell cell = row.getCell(i);
 				String colName = cell.getStringCellValue();
-				if ("融单编号".equals(colName)) {
+				if ("应付账款（暂估）金额".equals(colName)) {
 					targetIndexX = i;
 				}
-				if ("延期费用收益".equals(colName)) {
+				if ("关联融单开单可用金额".equals(colName)) {
 					targetIndexY = i;
+				}
+				if ("关联融单编号".equals(colName)) {
+					targetIndexZ = i;
 				}
 			}
 			
-			if (targetIndexX != -1 && targetIndexY != -1) {
+			String filePath = "C:\\Users\\Dev-005\\Desktop\\2020-07-06 修改开单折扣率sql.txt";
+			StringBuilder sql = new StringBuilder();
+			StringBuilder temp = new StringBuilder();
+			
+			if (targetIndexZ != -1 && targetIndexY != -1 && targetIndexX != -1) {
 				int rowNum = sheet.getLastRowNum();
+
 				for (int i = 1; i <= rowNum; i++) {
 					row = sheet.getRow(i);
 					// 注意，这里一定要判空
 					if (row != null) {
-						Cell ebillCodeCell = row.getCell(targetIndexX);
-						Cell delayFeeIncomeCell = row.getCell(targetIndexY);
-						
+						Cell payableAmtCell = row.getCell(targetIndexX);
+						Cell availableAmtCell = row.getCell(targetIndexY);
+						Cell ebillCodeCell = row.getCell(targetIndexZ);
 						// 注意，这里一定要判空
-						if (ebillCodeCell != null && delayFeeIncomeCell != null) {
+						if (payableAmtCell != null && availableAmtCell != null && ebillCodeCell != null) {
+							
+							BigDecimal payableAmt = new BigDecimal(payableAmtCell.getNumericCellValue() + "").setScale(2, BigDecimal.ROUND_HALF_UP);
+							BigDecimal availableAmt = new BigDecimal(availableAmtCell.getNumericCellValue() + "").setScale(2, BigDecimal.ROUND_HALF_UP);
+							BigDecimal frozenAmt = payableAmt.subtract(availableAmt);
 							String ebillCode = ebillCodeCell.getStringCellValue();
-							double delayFeeIncome = delayFeeIncomeCell.getNumericCellValue();
-							String updateFeeSql = "update eb_service_fee_clear set amount = " + delayFeeIncome + ", actual_amount = " + delayFeeIncome + " where ebill_code = '" + ebillCode + "';";
-							System.out.println(updateFeeSql);
+							
+							sql.append("update eb_account_payable set exchange_rate = '50.00', bill_available_amt = ").append(availableAmt)
+							.append(" where ebill_code = '").append(ebillCode).append("';\n");
+							
+							sql.append("update eb_bill set frozen_amt = ").append(frozenAmt).append(", ").append("available_amt = ").append(availableAmt)
+							.append(" where ebill_code = '").append(ebillCode).append("';\n");
+							
+							sql.append("update eb_bill_normally set available_amt = ").append(availableAmt).append(" where ebill_code = '").append(ebillCode).append("';\n\n");
+							
+							// 修复开单流水中的actual_amount字段
+							sql.append("update eb_bill_tx_list set actual_amount = ").append(availableAmt).append(" where tran_code = 'EB000070' and ebill_code = '").append(ebillCode).append("';\n\n");
+							
+							temp.append(ebillCode).append("#").append(availableAmt).append("\n");
 						}
 					}
 				}
 			}
-			*/
-			Map<String, String> ebillMap = loadMidData();
-			int rowNum = sheet.getLastRowNum();
-			for (int i = 1; i <= rowNum; i++) {
-				Row row = sheet.getRow(i);
-				// 注意，这里一定要判空
-				if (row != null) {
-					Cell ebillCodeCell = row.getCell(0);
-					Cell delayFeeIncomeCell = row.getCell(2);
-					
-					// 注意，这里一定要判空
-					if (ebillCodeCell != null) {
-						String ebillCode = ebillCodeCell.getStringCellValue();
-						String agreementCode = ebillMap.get(ebillCode);
-						delayFeeIncomeCell.setCellValue(agreementCode);
-						System.out.println(ebillCode);
-					}
-				}
-			}
-			OutputStream os = new FileOutputStream("C:\\Users\\Dev-005\\Desktop\\尾款自动融资协议编号查询 - 副本.xlsx");
-			workbook.write(os);
-			os.flush();
+			//sql = sql.append(temp);
+			FileUtils.writeStrInFile(sql.toString(), filePath);
 		}
-		//String str = sb.substring(0, sb.lastIndexOf(","));
-		//System.out.println("{" + str + "}");
 	}
 	
 	public static List<Workbook> getWorkBook() throws IOException {
 		List<Workbook> workbookList = new ArrayList<>();
 		
-		String basePath = "C:\\Users\\Dev-005\\Desktop\\尾款自动融资协议编号查询.xlsx";
+		String basePath = "C:\\Users\\Dev-005\\Desktop\\修改开单可用金额.xlsx";
 
 		File[] files = loadFile(basePath);
 		for (File file : files) {
