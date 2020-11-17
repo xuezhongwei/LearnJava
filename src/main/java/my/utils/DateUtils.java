@@ -1,5 +1,7 @@
 package my.utils;
 
+import java.text.SimpleDateFormat;
+
 public final class DateUtils {
 	public static final String DATE_FORMAT_0 = "yyyyMMdd";
 	public static final String DATE_FORMAT_1 = "yyyy-MM-dd";
@@ -14,5 +16,16 @@ public final class DateUtils {
 	
 	public static void main(String[] args) {
 		
+	}
+	
+	public static long getTimeStamp(String dateString) {
+		String createTime = "2016-10-24 21:59:06";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		try {
+		   return sdf.parse(createTime).getTime();
+		} catch (Exception e) {
+		   e.printStackTrace();
+		}
+		return 0;
 	}
 }
