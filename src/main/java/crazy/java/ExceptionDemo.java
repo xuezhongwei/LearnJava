@@ -111,7 +111,7 @@ class TestExceptionInterfaceImpl implements TestExceptionInterface {
 	
 	private void foo2() {
 		try {
-			
+			throw new CheckedException();
 		} catch(CheckedException e) {
 			// 如果catch一个根本不会抛出的checked exception，会报错
 		}

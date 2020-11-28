@@ -257,5 +257,11 @@
 	     <artifactId>bcprov-jdk15on</artifactId>
 	     <version>1.54</version>
 	</dependency>
+	<!-- java解析html -->
+	<dependency>
+	    <groupId>org.jsoup</groupId>
+	    <artifactId>jsoup</artifactId>
+	    <version>1.13.1</version>
+	</dependency>
   </dependencies>
 </project>

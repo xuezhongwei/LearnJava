@@ -17,7 +17,7 @@ public class DocDemo {
 		try {
 			FileInputStream fis = new FileInputStream(file);
 			HWPFDocument doc = new HWPFDocument(fis);
-			String doc1 = doc.get
+			//String doc1 = doc.get
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

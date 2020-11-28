@@ -13,7 +13,7 @@ import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 import com.sun.xml.internal.ws.api.pipe.NextAction;
 
 public class Test1 {
-	char[] chs = new char[]{'(', ')'};
+	static char[] chs = new char[]{'(', ')'};
 	public static void main(String[] args) throws IOException {
 		
 		
