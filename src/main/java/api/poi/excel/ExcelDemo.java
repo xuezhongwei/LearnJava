@@ -10,10 +10,17 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -152,5 +159,34 @@ public class ExcelDemo {
 		} else {
 			return new File[] {file};
 		}
+	}
+	
+	public static HSSFCellStyle getCellStyle(HSSFWorkbook workbook) {
+		HSSFCellStyle cellStyle = workbook.createCellStyle();
+        //设置水平居中
+        cellStyle.setAlignment(HorizontalAlignment.CENTER);
+        //设置垂直居中
+        cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        //设置下边框
+        cellStyle.setBorderBottom(BorderStyle.THIN);
+        //设置上边框
+        cellStyle.setBorderTop(BorderStyle.THIN);
+        //设置走边框
+        cellStyle.setBorderLeft(BorderStyle.THIN);
+        //设置右边框
+        cellStyle.setBorderRight(BorderStyle.THIN);
+        //设置字体
+        HSSFFont font = workbook.createFont();
+        font.setFontName("华文行楷");//设置字体名称
+        font.setFontHeightInPoints((short)28);//设置字号
+        font.setItalic(false);//设置是否为斜体
+        font.setBold(true);//设置是否加粗
+        font.setColor(IndexedColors.RED.index);//设置字体颜色
+        cellStyle.setFont(font);
+        //设置背景
+        cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        cellStyle.setFillForegroundColor(IndexedColors.YELLOW.index);
+        
+        return cellStyle;
 	}
 }
