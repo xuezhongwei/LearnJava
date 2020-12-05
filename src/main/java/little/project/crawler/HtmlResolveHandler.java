@@ -147,4 +147,15 @@ public class HtmlResolveHandler {
 			return "北京";
 		}
 	}
+	
+	public void resolveHuaweiCloudPrice(String inputFilePath, String outputFilePath) throws IOException {
+		Document doc = loadHtmlFile(inputFilePath);
+		Element body = doc.body();
+		Elements elements = body.select(".ivu-table-body");
+		Iterator<Element> iterator = elements.iterator();
+		while (iterator.hasNext()) {
+			Element ele = iterator.next();
+			System.out.println(ele.text());
+		}
+	}
 }

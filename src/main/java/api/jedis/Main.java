@@ -8,6 +8,7 @@ import java.util.Set;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
+import redis.clients.jedis.Transaction;
 import redis.clients.jedis.params.SetParams;
 
 public class Main {
@@ -36,6 +37,25 @@ public class Main {
 			jedis.close();
 		}
 		System.out.println("redis per second operate " + i + " times");
+	}
+	/**
+	 * 测试事务方法
+	 * @param jedis
+	 */
+	private static void transactionOperation(Jedis jedis) {
+		// 开启事务
+		Transaction multi = jedis.multi();
+		try {
+			multi.set("key", "val");
+			
+			// 提交事务
+			multi.exec();
+		} catch (Exception e) {
+			// 撤销事务操作
+			multi.discard();
+		} finally {
+			multi.close();
+		}
 	}
 	
 	private static void init() {
